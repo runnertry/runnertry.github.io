@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>陈玉成人礼快乐！</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #ffb6c1, #ffd3b6);
+            font-family: 'Microsoft YaHei', sans-serif;
+            overflow-x: hidden; /* 防止水平滚动 */
+        }
+
+        .container {
+            text-align: center;
+            padding-top: 50px;
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            color: #ff1493;
+            font-size: 3em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .slideshow {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255,105,180,0.3);
+        }
+
+        .slideshow img {
+            width: 100%;
+            display: none;
+            border-radius: 15px;
+        }
+
+        .slideshow img.active {
+            display: block;
+            animation: fade 1.5s ease-in-out;
+        }
+
+        .message {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px auto;
+            width: 60%;
+            box-shadow: 0 0 20px rgba(255,105,180,0.3);
+            position: relative;
+            font-family: '仿宋', serif; /* 字体改为仿宋体 */
+            font-size: 2em; /* 字体大小加倍 */
+            line-height: 1.5; /* 行间隔改为原来的1.5倍 */
+        }
+
+        .fireworks {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .firework {
+            position: absolute;
+            top: 20%; /* 烟花从页面上半部分生成 */
+            animation: firework 2s ease-out forwards;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: particle 1s ease-out forwards;
+        }
+
+        .balloons {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            perspective: 1000px; /* 3D效果 */
+        }
+
+        .balloon {
+            position: absolute;
+            width: 50px;
+            height: 70px;
+            background: #ff1493;
+            border-radius: 50%;
+            animation: balloon-float 6s ease-in infinite;
+            transform-style: preserve-3d; /* 3D效果 */
+        }
+
+        .balloon::before {
+            content: '';
+            position: absolute;
+            top: 100%; /* 引线从气球底部开始 */
+            left: 50%;
+            width: 2px;
+            height: 125px; /* 引线长度延长至原来的2.5倍 */
+            background: inherit; /* 引线颜色与气球一致 */
+            transform: translateX(-50%);
+        }
+
+        /* 花瓣效果 */
+        .petals {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .petal {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff69b4; /* 花瓣颜色 */
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); /* 菱形花瓣 */
+            animation: petal-fall 5s linear infinite;
+        }
+
+        @keyframes firework {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
+        }
+
+        @keyframes particle {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            100% { transform: translate(
+                calc(-50% + (var(--x) * 100%)), 
+                calc(-150% + (var(--y) * 100%))
+            ) rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes fade {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes balloon-float {
+            0% { transform: translateY(100vh); }
+            100% { transform: translateY(-100vh); }
+        }
+
+        /* 花瓣飘落动画 */
+        @keyframes petal-fall {
+            0% { transform: translateY(-10%) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        /* 左侧竖排文字 */
+        .left-text {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            writing-mode: vertical-rl;
+            font-family: 'ShouJinTi', cursive;
+            font-size: 65px; /* 字体大小改为65px */
+            color: #ff1493;
+            z-index: 3;
+        }
+
+        /* 右侧竖排文字 */
+        .right-text {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            writing-mode: vertical-rl;
+            font-family: 'ShouJinTi', cursive;
+            font-size: 65px; /* 字体大小改为65px */
+            color: #ff1493;
+            z-index: 3;
+        }
+
+        /* 右上角图片 */
+        .top-right-image {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            z-index: 3;
+            text-align: center;
+        }
+
+        .top-right-image img {
+            width: 100px;
+            border-radius: 10px;
+        }
+
+        .top-right-image p {
+            font-family: '仿宋', serif;
+            font-size: 16px;
+            color: #ff1493;
+            margin-top: 5px;
+        }
+
+        /* 音频控制按钮 */
+        .audio-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 3;
+            background-color: #ff1493;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .audio-control:hover {
+            background-color: #ff69b4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 !Happy Birthday to 18! 🎉</h1>
+        <div class="slideshow">
+            <img src="https://img.picui.cn/free/2025/03/14/67d3107faed20.jpg" class="active" alt="图片1">
+            <img src="https://img.picui.cn/free/2025/03/14/67d3107fef51d.jpg" alt="图片2">
+            <img src="https://img.picui.cn/free/2025/03/14/67d3108009fc1.jpg" alt="图片3">
+            <img src="https://img.picui.cn/free/2025/03/14/67d311427672a.png" alt="图片4">
+        </div>
+        <div class="message">
+            <p>亲爱的陈玉可靠Plus：</p >
+            <p>十八韶华，愿温柔如你常伴明月清风，</p >
+            <p>愿大方如你尽展人生华章，</p >
+            <p>美丽如星辰，可靠如山海，</p >
+            <p>往后岁月，万事胜意！</p >
+        </div>
+    </div>
+    <div class="fireworks"></div>
+    <div class="balloons"></div>
+    <div class="petals"></div> <!-- 花瓣容器 -->
+
+    <!-- 左侧竖排文字 -->
+    <div class="left-text">
+        *有生之年*    *欣喜相逢*
+    </div>
+
+    <!-- 右侧竖排文字 -->
+    <div class="right-text">
+        *昭昭如愿*    *岁岁安澜*
+    </div>
+
+    <!-- 右上角图片 -->
+    <div class="top-right-image">
+        <img src="https://img.picui.cn/free/2025/03/14/67d449aea3d91.jpg" alt="右上角图片">
+        <p>天天开心如此</p >
+    </div>
+
+    <!-- 音频控制按钮 -->
+    <button class="audio-control" id="audio-control">🎵</button>
+
+    <!-- 增加一些空白区域以确保页面可以滚动 -->
+    <div style="height: 1000px;"></div>
+
+    <!-- 音频：替换为 Happy Birthday 歌曲 -->
+    <audio id="background-music" src="https://www.example.com/happy-birthday.mp3" loop></audio>
+
+    <script>
+        const colors = ['#ff1493', '#ffd700', '#00ffff', '#7fff00', '#ff4500'];
+        
+        // 烟花效果
+        function createFirework() {
+            const firework = document.createElement('div');
+            firework.className = 'firework';
+            firework.style.left = Math.random() * 95 + '%';
+            firework.style.top = Math.random() * 50 + '%'; // 烟花从页面上半部分生成
+            
+            for(let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.setProperty('--x', Math.random() * 2 - 1);
+                particle.style.setProperty('--y', Math.random());
+                particle.style.left = 50 + '%';
+                particle.style.top = 50 + '%';
+                particle.style.animationDuration = Math.random() * 0.5 + 0.8 + 's';
+                firework.appendChild(particle);
+            }
+
+            document.querySelector('.fireworks').appendChild(firework);
+            setTimeout(() => firework.remove(), 2000);
+        }
+
+        // 气球效果
+        function createBalloon() {
+            const balloon = document.createElement('div');
+            balloon.className = 'balloon';
+            balloon.style.left = Math.random() * 95 + '%';
+            balloon.style.background = colors[Math.floor(Math.random() * colors.length)];
+            balloon.style.animationDuration = Math.random() * 4 + 6 + 's';
+            document.querySelector('.balloons').appendChild(balloon);
+            setTimeout(() => balloon.remove(), 6000);
+        }
+
+        // 花瓣效果
+        function createPetal() {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            petal.style.left = Math.random() * 100 + 'vw'; // 随机水平位置
+            petal.style.top = Math.random() * -20 + 'vh'; // 从页面顶部随机位置生成
+            petal.style.animationDuration = Math.random() * 3 + 5 + 's'; // 随机下落速度
+            petal.style.opacity = Math.random() * 0.7 + 0.3; // 随机透明度
+            document.querySelector('.petals').appendChild(petal);
+            setTimeout(() => petal.remove(), 8000); // 花瓣消失时间
+        }
+
+        // 生成烟花
+        setInterval(createFirework, 100);
+        createFirework(); // 立即生成第一个烟花
+
+        // 生成气球
+        setInterval(createBalloon, 100); // 将时间间隔从 500 毫秒改为 200 毫秒
+        createBalloon(); // 立即生成第一个气球
+
+        // 生成花瓣
+        setInterval(createPetal, 50); // 每 500 毫秒生成一个花瓣
+        createPetal(); // 立即生成第一个花瓣
+
+        // 图片轮播逻辑
+        const images = document.querySelectorAll('.slideshow img');
+        let currentIndex = 0;
+
+        function showNextImage() {
+            images[currentIndex].classList.remove('active');
+            currentIndex = (currentIndex + 1) % images.length;
+            images[currentIndex].classList.add('active');
+        }
+
+        setInterval(showNextImage, 3000); // 每3秒切换一张图片    
+
+        // 音频控制按钮逻辑
+        const audioControl = document.getElementById('audio-control');
+        const audio = document.getElementById('background-music');
+
+        audioControl.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play();
+                audioControl.textContent = '⏸️'; // 播放时显示暂停图标
+            } else {
+                audio.pause();
+                audioControl.textContent = '🎵'; // 暂停时显示音乐图标
+            }
+        });
+    </script>
+</body>
+</html>
